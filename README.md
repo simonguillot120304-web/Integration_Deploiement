@@ -1,5 +1,6 @@
 # Integration_Deploiement
 ## TP1
+### Manip conteneur
 1)
 C:\Users\simon>docker --version
 Docker version 29.9.2, build a82e528
@@ -60,3 +61,38 @@ c2d8e1ec3339
 C:\Users\simon>docker rmi c567b231f656
 Untagged: hello-world:latest
 Deleted: sha256:c567b231f65614688711a75f31518a064258a51d442117a3e771a3a8fdba78ef
+
+### Serveur Web
+1)
+C:\Users\simon>docker pull nginx
+Using default tag: latest
+latest: Pulling from library/nginx
+6d2e43921e9e: Pull complete
+1962e1ff75b4: Pull complete
+bbb080c71d50: Pull complete
+1724c05f72c6: Pull complete
+7cb4701ce7cd: Pull complete
+37fb86c2a767: Pull complete
+512ac5e7ce8e: Pull complete
+4582dace95e2: Download complete
+d2c7e31f04a3: Download complete
+Digest: sha256:165ddde8751e75a1c907d24ef10d9f6deb08b57e0fe56caf67512486aff76d82
+Status: Downloaded newer image for nginx:latest
+docker.io/library/nginx:latest
+
+2)
+C:\Users\simon>docker run -d -p 8080:80 --name mon_nginx nginx
+4f44861f147004c6a8005129277558ee07a22fd023f9ec683ef23961042042b3
+
+3)
+C:\Users\simon>docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+4f44861f1470   nginx     "/docker-entrypoint.…"   9 seconds ago   Up 8 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   mon_nginx
+
+5)
+C:\Users\simon>docker stop mon_nginx
+mon_nginx
+
+6)
+C:\Users\simon>docker rm mon_nginx
+mon_nginx
