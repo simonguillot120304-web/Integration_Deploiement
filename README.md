@@ -119,3 +119,4 @@ Mesure après (node:24.22.2-bookworm) : image de 1 727 982 255 soit 8% de moins,
 - Pour la route /big, on remplace la lecture synchrone complète par un flux de lecture et de transformation. Le serveur conserve la conversion des retours à la ligne en <br/>, mais peut maintenant traiter d'autres requêtes pendant l'envoi du fichier.
 Comparaison avec un fichier temporaire de 64 Mio, 30 requêtes vers / envoyées pendant le transfert de /big : avant, transfert en 474,71 ms ; latence moyenne de / de 14,29 ms.
 Après : transfert en 267,38 ms ; latence moyenne de / de 2,47 ms. Les 64 Mio ont été reçus dans les deux cas. La taille de l'image reste la même
+- Si le fichier de /big est absent, la route conserve le message « Fichier introuvable » et renvoie maintenant le statut HTTP 404. C'est une correction fonctionnelle : aucune amélioration de taille ou de performance n'est attendue.

@@ -23,7 +23,7 @@ app.get('/big', async (req, res, next) => {
         await fs.promises.access(filePath, fs.constants.R_OK);
     } catch (error) {
         if (error.code === 'ENOENT') {
-            res.send('Fichier introuvable');
+            res.status(404).send('Fichier introuvable');
             return;
         }
 
