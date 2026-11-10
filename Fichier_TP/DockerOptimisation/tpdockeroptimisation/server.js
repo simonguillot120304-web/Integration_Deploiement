@@ -6,9 +6,21 @@ const { pipeline } = require('stream/promises');
 
 const app = express();
 
-// Middleware verbeux et un peu inutile
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    const startedAt = process.hrtime.bigint();
+
+    res.on('finish', () => {
+        const durationMs = Number(process.hrtime.bigint() - startedAt) / 1e6;
+
+        console.log(JSON.stringify({
+            timestamp: new Date().toISOString(),
+            method: req.method,
+            path: req.path,
+            status: res.statusCode,
+            durationMs: Number(durationMs.toFixed(2)),
+        }));
+    });
+
     next();
 });
 

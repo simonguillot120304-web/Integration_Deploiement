@@ -118,5 +118,9 @@ Mesure après (node:24.22.2-bookworm) : image de 1 727 982 255 soit 8% de moins,
 - On supprime les deux ports non écoutés. Pas de gain de taille ni de performance significatives mais on évite d'écouter des ports que nous n'utilisons pas.
 - Pour la route /big, on remplace la lecture synchrone complète par un flux de lecture et de transformation. Le serveur conserve la conversion des retours à la ligne en <br/>, mais peut maintenant traiter d'autres requêtes pendant l'envoi du fichier.
 Comparaison avec un fichier temporaire de 64 Mio, 30 requêtes vers / envoyées pendant le transfert de /big : avant, transfert en 474,71 ms ; latence moyenne de / de 14,29 ms.
-Après : transfert en 267,38 ms ; latence moyenne de / de 2,47 ms. Les 64 Mio ont été reçus dans les deux cas. La taille de l'image reste la même
+Après : transfert en 267,38 ms ; latence moyenne de / de 2,47 ms. Les 64 Mio ont été reçus dans les deux cas. La taille de l'image reste la même.
 - Si le fichier de /big est absent, la route conserve le message « Fichier introuvable » et renvoie maintenant le statut HTTP 404. C'est une correction fonctionnelle : aucune amélioration de taille ou de performance n'est attendue.
+- MongoDB n'étant pas utilisé par le code, on retire cette dépendance de package.json et package-lock.json avec npm uninstall mongodb. Cela évite d'installer et d'embarquer le pilote et ses dépendances.
+Avant : image de 1 734 180 165 octets.
+Après : image de 1 720 014 640 octets, soit 14 165 525 octets (environ 0,82 %) de moins.
+- Le middleware de logs écrit maintenant une ligne JSON après chaque réponse terminée, avec l'horodatage, la méthode, le chemin, le statut HTTP et la durée. Il utilise req.path pour exclure les paramètres de requête qui pourraient contenir des données sensibles. Ce changement n'affecte pas les performances et la taille de l'image.
