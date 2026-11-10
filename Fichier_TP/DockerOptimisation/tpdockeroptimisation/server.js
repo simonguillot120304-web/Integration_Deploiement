@@ -1,35 +1,55 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-
+const { Transform } = require('stream');
+const { pipeline } = require('stream/promises');
 
 const app = express();
 
-
 // Middleware verbeux et un peu inutile
 app.use((req, res, next) => {
-console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-next();
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
 });
-
 
 app.get('/', (req, res) => {
-res.send('Hello world — serveur volontairement non optimisé mais fonctionnel');
+    res.send('Hello world — serveur volontairement non optimisé mais fonctionnel');
 });
 
+app.get('/big', async (req, res, next) => {
+    const filePath = path.join(__dirname, 'maybe-big-file.txt');
 
-app.get('/big', (req, res) => {
-const filePath = path.join(__dirname, 'maybe-big-file.txt');
-if (fs.existsSync(filePath)) {
-const data = fs.readFileSync(filePath, 'utf8');
-res.send(data.replace(/\n/g, '<br/>'));
-} else {
-res.send('Fichier introuvable');
-}
+    try {
+        await fs.promises.access(filePath, fs.constants.R_OK);
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            res.send('Fichier introuvable');
+            return;
+        }
+
+        next(error);
+        return;
+    }
+
+    res.type('html');
+
+    try {
+        await pipeline(
+            fs.createReadStream(filePath, { encoding: 'utf8' }),
+            new Transform({
+                decodeStrings: false,
+                transform(chunk, encoding, callback) {
+                    callback(null, chunk.replace(/\n/g, '<br/>'));
+                },
+            }),
+            res
+        );
+    } catch (error) {
+        next(error);
+    }
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-console.log(`Serveur démarré sur le port ${PORT}`);
+    console.log(`Serveur démarré sur le port ${PORT}`);
 });

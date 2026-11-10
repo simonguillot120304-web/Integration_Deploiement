@@ -115,4 +115,7 @@ mon_nginx
 Mesure avant (node:latest, Node.js 26.13.0) : image de 1 884 189 108 octets ; latence moyenne de 10,45 ms (médiane : 9,05 ms sur 10 requêtes).
 Mesure après (node:24.22.2-bookworm) : image de 1 727 982 255 soit 8% de moins, aucun changement de performance mais plus de stabilité.
 - Le Dockerfile copie maintenant package.json et package-lock.json, exécute npm ci, puis copie le code. Aussi, j'ai ajouté un .dockerignore. Le .dockerignore empêche notamment l'envoi du dossier local node_modules au démon Docker. Pas de gain de taille ou de performance mais un contexte de construction beaucoup plus petit, passant de 87kb à 549 octets.
-- On supprime les deux ports non écoutés. Pas de gain de taille ni de performance significatives mais on évité d'écouter des ports que nous n'utilisons pas.
+- On supprime les deux ports non écoutés. Pas de gain de taille ni de performance significatives mais on évite d'écouter des ports que nous n'utilisons pas.
+- Pour la route /big, on remplace la lecture synchrone complète par un flux de lecture et de transformation. Le serveur conserve la conversion des retours à la ligne en <br/>, mais peut maintenant traiter d'autres requêtes pendant l'envoi du fichier.
+Comparaison avec un fichier temporaire de 64 Mio, 30 requêtes vers / envoyées pendant le transfert de /big : avant, transfert en 474,71 ms ; latence moyenne de / de 14,29 ms.
+Après : transfert en 267,38 ms ; latence moyenne de / de 2,47 ms. Les 64 Mio ont été reçus dans les deux cas. La taille de l'image reste la même
