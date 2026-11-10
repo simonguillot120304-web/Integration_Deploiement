@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environnements virtuels
+venv/
+env/
+.venv/
+ENV/
+
+# Distribution
+build/
+dist/
+*.egg-info/
+
+# Tests et couverture
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Flask
+instance/
+.webassets-cache
+
+# Variables d'environnement et secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
