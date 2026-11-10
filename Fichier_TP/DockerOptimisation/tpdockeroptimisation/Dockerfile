@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:24.22.2-bookworm
 WORKDIR /app
 COPY node_modules ./node_modules
 COPY . /app

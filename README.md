@@ -101,10 +101,16 @@ mon_nginx
 ### Optimiser le dockerfile
 #### Analyse du code et Dockerfile
 - le fichier s'appelle dockerfile or la commande docker cherche un fichier nommé Dockerfile
-- dockerfile utilise node:latest : le contenu de l’image peut changer sans modification du projet. Le lancementr Docker peut devenir instable.
+- dockerfile utilise node:latest : le contenu de l’image peut changer sans modification du projet. Le lancement Docker peut devenir instable.
 - dockerfile copie node_modules depuis la machine hôte, puis réinstalle les dépendances. On alourdit donc le processus de construction.
 - dockerfile expose trois ports mais le serveur n'écoute par défaut que le 3000
 - la route /big du serveur charge entièrement le fichier en mémoire ce qui peut bloquer le traitement en cas de fichier trop lourd.
 - l'absence de fichier dans la route /big envoie un message d'erreur mais sous forme de réponse normale et non 404
 - mention de MongoDb dans le package Json qui ne semble pas utile dans l'app
 - le format de log ne semble pas très utile. il ne renseigne ni le statut de la réponse, ni sa durée, ni une indication d'erreur mais seulement l'heure, la méthode et l'URL. De plus copier l'URL directement ouvre à la collecte de données personnelles selon les paramètres de la requête
+
+#### Proposer des solutions
+- On renomme le fichier Dockerfile, cela n'a pas d'impact sur la performance ni la taille de l'image
+- On remplace `node:latest` par `node:24.22.2-bookworm` pour fixer la version LTS de Node.js et la version de Debian utilisée.
+Mesure avant (`node:latest`, Node.js 26.13.0) : image de 1 884 189 108 octets ; latence moyenne de 10,45 ms (médiane : 9,05 ms sur 10 requêtes).
+Mesure après (`node:24.22.2-bookworm`) : image de 1 727 982 255 soit 8% de moins, aucun changement de performance mais plus de stabilité.
