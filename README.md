@@ -108,6 +108,7 @@ mon_nginx
 - l'absence de fichier dans la route /big envoie un message d'erreur mais sous forme de réponse normale et non 404
 - mention de MongoDb dans le package Json qui ne semble pas utile dans l'app
 - le format de log ne semble pas très utile. il ne renseigne ni le statut de la réponse, ni sa durée, ni une indication d'erreur mais seulement l'heure, la méthode et l'URL. De plus copier l'URL directement ouvre à la collecte de données personnelles selon les paramètres de la requête
+-On utilise des APT qui ne sont pas utiles dans l'application qui sont build-essentials, ca-certificates et locales.
 
 #### Proposer des solutions
 - On renomme le fichier Dockerfile, cela n'a pas d'impact sur la performance ni la taille de l'image
@@ -124,3 +125,6 @@ Après : transfert en 267,38 ms ; latence moyenne de / de 2,47 ms. Les 64 Mio on
 Avant : image de 1 734 180 165 octets.
 Après : image de 1 720 014 640 octets, soit 14 165 525 octets (environ 0,82 %) de moins.
 - Le middleware de logs écrit maintenant une ligne JSON après chaque réponse terminée, avec l'horodatage, la méthode, le chemin, le statut HTTP et la durée. Il utilise req.path pour exclure les paramètres de requête qui pourraient contenir des données sensibles. Ce changement n'affecte pas les performances et la taille de l'image.
+- Pour réduire la taille on retire l'installation APT de build-essential, ca-certificates et locales, inutiles au fonctionnement de cette application.
+Avant : image de 1 720 014 640 octets.
+Après : image de 348 286 383 octets soit 1 371 728 257 octets (environ 79,8 %) de moins.
